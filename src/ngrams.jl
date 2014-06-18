@@ -1,6 +1,13 @@
 # N-Gram Word Analysis
 module Ngrams
 
+  using Iterators
+
+  const rxphrase = r"[\w\s'-]+"
+  const rxword = r"[A-Za-z][A-Za-z'-]*"
+
+
+  #
   function report(dir, max, n=3)
     stats = parse(dir, n)
     grams = bestngrams(stats, max)
@@ -31,11 +38,10 @@ module Ngrams
     for file in files
       text = open(readall, file)
       for phrase in phrases(text)
-        gram = String[]
         for i in 2:n
-          for gram in partitions(phrase, n, 1)
+          for gram in partition(words(phrase), i, 1)
             lgram = map(x->lowercase(x), gram)
-            if valid(gram)
+            if valid(lgram)
               subgram = join(lgram, " ")
               oldstat = get(stats, subgram, 0)
               push!(stats, subgram, oldstat + 1)
@@ -62,12 +68,12 @@ module Ngrams
 
   # Returns an iterator over word phrases.
   function phrases(text)
-    map(x->x.match, eachmatch(r"[\w\s'-]+", text))
+    map(x->x.match, eachmatch(rxphrase, text))
   end
 
   # Returns an iterator over words.
   function words(text)
-    map(x->x.match, eachmatch(r"[A-Za-z][A-Za-z']*", text))
+    map(x->x.match, eachmatch(rxword, text))
   end
 
   function valid(gram)
