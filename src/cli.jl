@@ -21,7 +21,7 @@ module Corpus
     #
     # TODO: options for sizes
     function ngrams(dir)
-      Ngrams.analyize(dir, 16000, 3)
+      Ngrams.analyze(dir, 16000, 3)
     end
 
     # todo

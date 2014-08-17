@@ -7,7 +7,7 @@ module Corpus
   # TODO: finish
   #
   module Words
-    export analyize
+    export analyze
 
     type Word
       spelling::String
@@ -17,7 +17,7 @@ module Corpus
     const rxword = r"[A-Za-z][A-Za-z'-]*"
 
     #
-    function analyize(dir, max, n=3)
+    function analyze(dir, max, n=3)
       stats = parse(dir, n)
       grams = bestngrams(stats, max)
       display(grams)

@@ -5,7 +5,7 @@ module Corpus
   # N-Gram Word Analysis
   #
   module Ngrams
-    export analyize
+    export analyze
 
     import Iterators
 
@@ -13,7 +13,7 @@ module Corpus
     const rxword = r"[A-Za-z][A-Za-z'-]*"
 
     #
-    function analyize(dir, max, n=3)
+    function analyze(dir, max, n=3)
       stats = parse(dir, n)
       grams = bestngrams(stats, max)
       display(grams)
