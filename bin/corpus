@@ -1,6 +1,6 @@
 #!/usr/bin/env julia
 
-require Corpus
+include("../src/Corpus.jl")
 
 Corpus.cli(ARGS)
 

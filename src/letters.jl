@@ -1,11 +1,6 @@
-require Iterators
+module Letters
 
-module Corpus
-
-  module Letters
-
-    # TODO
-
-  end
+  import Iterators
 
 end
+

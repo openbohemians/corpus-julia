@@ -1,9 +1,9 @@
-require NGrams
-require Words
-require Letters
-require Cli
-
 module Corpus
+  include("ngrams.jl")
+  #include("words.jl")
+  include("letters.jl")
+  include("cli.jl")
+
   export cli
 
   #
