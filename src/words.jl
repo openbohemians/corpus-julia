@@ -1,51 +1,77 @@
-# Corpus - Julia Rendition
+require Iterators
 
-type Word
-  spelling::String
-  files::Dict{String,Int}()
-end
+module Corpus
 
-# Iterate through all the files in the corpus and add them to the
-# dictionary.
-function read_words(directory)
-  dict = Dict{String,Word}()
+  # Words analysis
+  #
+  # TODO: finish
+  #
+  module Words
+    export analyize
 
-  # collect all files in the directory
-  files = corpus_files(directory)
+    type Word
+      spelling::String
+      files::Dict{String,Int}()
+    end
 
-  # read file line by line
-  for file in files do
-    open(file,"r") do f
-      text = ""
-      for line in eachline(f)
-        words = matchall(/[A-Za-z][A-Za-z']*/, line)
-        for word in words do
-          w = get(dict, word, Word(word, {}))
-          v = get(w.files, file, 0)
-          w.files[file] = v + 1
+    const rxword = r"[A-Za-z][A-Za-z'-]*"
+
+    #
+    function analyize(dir, max, n=3)
+      stats = parse(dir, n)
+      grams = bestngrams(stats, max)
+      display(grams)
+    end
+
+    #
+    function parse(directory)
+      stats = Dict{String,Word}()
+      files = corpus_files(directory)
+      #total = endof(files)
+      for file in files
+        text = open(readall, file)
+        for phrase in phrases(text)
+            for word in words(phrase)
+              lgram = map(x->lowercase(x), word)
+              if valid(word)
+                w = get(stats, word, Word(word, {}))
+                v = get(w.files, file, 0)
+                w.files[file] = v + 1
+              end
+            end
+          end
         end
       end
+      stats
     end
-  end
 
-  return dict
-end
-
-# Collect all text files from the given directory.
-function corpus_files(directory)
-  list = String[]
-  paths = readdir(directory)
-  for path in paths do
-    if (isdir(path) do
-      vcat(list, corpus_files(path))
-    else
-      if (endswith(path, '.txt') do
-        add(list, path)
+    # Collect all text files from the given directory.
+    function corpus_files(directory)
+      list = String[]
+      paths = readdir(directory)
+      for path in paths
+        fullpath = joinpath(directory, path)
+        if isdir(fullpath) 
+          list = vcat(list, corpus_files(fullpath))
+        else
+          if endswith(path, ".txt")
+            push!(list, fullpath)
+          end
+        end
       end
+      list
     end
+
+    # Returns an iterator over words.
+    function words(text)
+      map(x->x.match, eachmatch(rxword, text))
+    end
+
+    #
+    function valid(word)
+      true # todo
+    end
+
   end
-  return list
+
 end
-
-#
-
